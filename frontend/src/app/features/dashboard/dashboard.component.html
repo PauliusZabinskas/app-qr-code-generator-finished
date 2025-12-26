@@ -1,0 +1,84 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">Welcome to WiFi QR Code Generator</h1>
+    <p class="dashboard-subtitle">
+      Hello, {{ authService.currentUser()?.email }}!
+    </p>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="dashboard-card">
+      <div class="card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      </div>
+      <h2 class="card-title">Generate QR Code</h2>
+      <p class="card-description">
+        Create a new WiFi QR code for your network. Share WiFi credentials instantly.
+      </p>
+      <a routerLink="/qr-generator" class="card-button">
+        Get Started
+      </a>
+    </div>
+
+    <div class="dashboard-card">
+      <div class="card-icon card-icon-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+        </svg>
+      </div>
+      <h2 class="card-title">My QR Codes</h2>
+      <p class="card-description">
+        View, manage, and download all your previously created WiFi QR codes.
+      </p>
+      <a routerLink="/my-codes" class="card-button card-button-secondary">
+        View Codes
+      </a>
+    </div>
+
+    @if (authService.isAdmin()) {
+      <div class="dashboard-card">
+        <div class="card-icon card-icon-admin">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <h2 class="card-title">Admin Panel</h2>
+        <p class="card-description">
+          Access admin features to manage all WiFi credentials across users.
+        </p>
+        <a routerLink="/admin/credentials" class="card-button card-button-admin">
+          Admin Panel
+        </a>
+      </div>
+    }
+  </div>
+
+  <div class="dashboard-info">
+    <h3 class="info-title">How it works</h3>
+    <div class="info-steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Enter WiFi Details</h4>
+          <p>Provide your network name (SSID), password, and security type</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Generate QR Code</h4>
+          <p>Click generate and we'll create a QR code for your WiFi network</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Share & Connect</h4>
+          <p>Users can scan the QR code to instantly connect to your WiFi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

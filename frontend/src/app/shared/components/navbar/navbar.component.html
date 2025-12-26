@@ -1,0 +1,70 @@
+@if (authService.isAuthenticated()) {
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a routerLink="/dashboard" class="brand-link">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="brand-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+          </svg>
+          <span class="brand-text">WiFi QR</span>
+        </a>
+      </div>
+
+      <div class="navbar-links">
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          class="nav-link"
+        >
+          Dashboard
+        </a>
+        <a
+          routerLink="/qr-generator"
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          Generate QR
+        </a>
+        <a
+          routerLink="/my-codes"
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          My Codes
+        </a>
+        @if (authService.isAdmin()) {
+          <a
+            routerLink="/admin/credentials"
+            routerLinkActive="active"
+            class="nav-link nav-link-admin"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Admin
+          </a>
+        }
+      </div>
+
+      <div class="navbar-user">
+        <div class="user-info">
+          <div class="user-avatar">
+            {{ authService.currentUser()?.email?.charAt(0)?.toUpperCase() }}
+          </div>
+          <span class="user-email">{{ authService.currentUser()?.email }}</span>
+        </div>
+        <button
+          type="button"
+          class="btn-logout"
+          (click)="logout()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+}

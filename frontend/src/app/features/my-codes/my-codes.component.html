@@ -1,0 +1,109 @@
+<div class="my-codes-container">
+  <div class="my-codes-header">
+    <h1 class="page-title">My WiFi QR Codes</h1>
+    <p class="page-subtitle">View and manage your saved WiFi QR codes</p>
+  </div>
+
+  @if (errorMessage()) {
+  <div class="alert alert-error">
+    {{ errorMessage() }}
+  </div>
+  }
+
+  @if (isLoading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your QR codes...</p>
+  </div>
+  } @else {
+  @if (credentials().length === 0) {
+  <div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+    <h2>No QR Codes Yet</h2>
+    <p>You haven't created any WiFi QR codes yet. Get started by generating your first one!</p>
+    <a href="/qr-generator" class="btn btn-primary">Generate QR Code</a>
+  </div>
+  } @else {
+  <div class="credentials-grid">
+    @for (credential of credentials(); track credential.id) {
+    <div class="credential-card" (click)="viewQRCode(credential)">
+      <div class="card-header">
+        <div class="qr-preview">
+          <img [src]="getQRCodeUrl(credential.qrCodeData)" alt="QR Code" />
+        </div>
+      </div>
+      <div class="card-body">
+        <h3 class="credential-ssid">{{ credential.ssid }}</h3>
+        <div class="credential-details">
+          <div class="detail-item">
+            <span class="detail-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </span>
+            <span>{{ credential.securityType }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </span>
+            <span>{{ credential.createdAt | date: 'short' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button type="button" class="btn-icon btn-delete" (click)="deleteCredential(credential.id, $event)"
+          title="Delete">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  }
+  }
+
+  @if (selectedCredential()) {
+  <div class="modal-overlay" (click)="closeQRCode()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeQRCode()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <h2 class="modal-title">{{ selectedCredential()?.ssid }}</h2>
+      <div class="modal-qr">
+        <img [src]="getQRCodeUrl(selectedCredential()!.qrCodeData)" alt="WiFi QR Code" />
+      </div>
+      <div class="modal-details">
+        <div class="modal-detail-row">
+          <span class="detail-label">Network Name:</span>
+          <span class="detail-value">{{ selectedCredential()?.ssid }}</span>
+        </div>
+        <div class="modal-detail-row">
+          <span class="detail-label">Security Type:</span>
+          <span class="detail-value">{{ selectedCredential()?.securityType }}</span>
+        </div>
+        <div class="modal-detail-row">
+          <span class="detail-label">Hidden Network:</span>
+          <span class="detail-value">{{ selectedCredential()?.hidden ? 'Yes' : 'No' }}</span>
+        </div>
+        <div class="modal-detail-row">
+          <span class="detail-label">Created:</span>
+          <span class="detail-value">{{ selectedCredential()?.createdAt | date: 'medium' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,11 @@
+<div class="qr-display">
+  <div class="qr-header">
+    <h3 class="qr-title">{{ ssid() }}</h3>
+    @if (securityType()) {
+      <span class="qr-security">{{ securityType() }}</span>
+    }
+  </div>
+  <div class="qr-image-wrapper">
+    <img [src]="qrCodeUrl()" [alt]="'QR Code for ' + ssid()" class="qr-image" />
+  </div>
+</div>
