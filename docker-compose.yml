@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: wifiqr-postgres
+    environment:
+      POSTGRES_USER: wifiqr
+      POSTGRES_PASSWORD: dev_password_123
+      POSTGRES_DB: wifiqr_db
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docs/DATABASE_SCHEMA.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - wifiqr-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U wifiqr -d wifiqr_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # Go Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: wifiqr-backend
+    environment:
+      # Database Configuration
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: wifiqr
+      DB_PASSWORD: dev_password_123
+      DB_NAME: wifiqr_db
+      DB_SSL_MODE: disable
+
+      # Security
+      JWT_SECRET: dev_jwt_secret_key_change_in_production_minimum_32_chars
+      ENCRYPTION_KEY: dev_encryption_key_32_bytes_long
+
+      # Server Configuration
+      PORT: 8080
+      FRONTEND_URL: http://localhost:4200
+      GIN_MODE: debug
+      LOG_LEVEL: debug
+
+      # CORS
+      ALLOWED_ORIGINS: http://localhost:4200,http://localhost:4201
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - wifiqr-network
+    volumes:
+      - ./backend:/app
+      - go_modules:/go/pkg/mod
+    command: air -c .air.toml
+    restart: unless-stopped
+
+  # Angular Frontend
+  # Angular Frontend - Commented out as running manually
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.dev
+  #   container_name: wifiqr-frontend
+  #   environment:
+  #     - NODE_ENV=development
+  #     - API_URL=http://localhost:8080/api
+  #   ports:
+  #     - "4200:4200"
+  #   networks:
+  #     - wifiqr-network
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #     - /app/.angular
+  #   command: npm start
+  #   restart: unless-stopped
+  #   stdin_open: true
+  #   tty: true
+
+  # pgAdmin (Optional - Database Management UI)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: wifiqr-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@wifiqr.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    networks:
+      - wifiqr-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  go_modules:
+    driver: local
+
+networks:
+  wifiqr-network:
+    driver: bridge
+    name: wifiqr-network
