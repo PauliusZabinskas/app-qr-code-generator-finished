@@ -7,141 +7,121 @@
   <div class="qr-generator-content">
     <div class="form-section">
       @if (errorMessage()) {
-        <div class="alert alert-error">
-          {{ errorMessage() }}
-        </div>
+      <div class="alert alert-error">
+        {{ errorMessage() }}
+      </div>
       }
 
       @if (successMessage()) {
-        <div class="alert alert-success">
-          {{ successMessage() }}
-        </div>
+      <div class="alert alert-success">
+        {{ successMessage() }}
+      </div>
       }
 
       <form [formGroup]="wifiForm" (ngSubmit)="onSubmit()" class="wifi-form">
         <div class="form-group">
           <label for="ssid">Network Name (SSID)</label>
-          <input
-            type="text"
-            id="ssid"
-            formControlName="ssid"
-            class="form-input"
-            placeholder="Enter your WiFi network name"
-          />
+          <input type="text" id="ssid" formControlName="ssid" class="form-input"
+            placeholder="Enter your WiFi network name" />
           @if (ssid?.invalid && ssid?.touched) {
-            <div class="form-error">
-              @if (ssid?.errors?.['required']) {
-                <span>Network name is required</span>
-              }
-              @if (ssid?.errors?.['minlength']) {
-                <span>Network name must be at least 1 character</span>
-              }
-            </div>
+          <div class="form-error">
+            @if (ssid?.errors?.['required']) {
+            <span>Network name is required</span>
+            }
+            @if (ssid?.errors?.['minlength']) {
+            <span>Network name must be at least 1 character</span>
+            }
+          </div>
           }
         </div>
 
         <div class="form-group">
           <label for="securityType">Security Type</label>
-          <select
-            id="securityType"
-            formControlName="securityType"
-            class="form-input"
-          >
+          <select id="securityType" formControlName="securityType" class="form-input">
             @for (type of securityTypes; track type) {
-              <option [value]="type">
-                @if (type === 'nopass') {
-                  None (Open Network)
-                } @else {
-                  {{ type }}
-                }
-              </option>
+            <option [value]="type">
+              @if (type === 'nopass') {
+              None (Open Network)
+              } @else {
+              {{ type }}
+              }
+            </option>
             }
           </select>
         </div>
 
         @if (isPasswordRequired) {
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              formControlName="password"
-              class="form-input"
-              placeholder="Enter WiFi password"
-            />
-            @if (password?.invalid && password?.touched) {
-              <div class="form-error">
-                @if (password?.errors?.['required']) {
-                  <span>Password is required</span>
-                }
-                @if (password?.errors?.['minlength']) {
-                  <span>Password must be at least 8 characters</span>
-                }
-              </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" formControlName="password" class="form-input"
+            placeholder="Enter WiFi password" />
+          @if (password?.invalid && password?.touched) {
+          <div class="form-error">
+            @if (password?.errors?.['required']) {
+            <span>Password is required</span>
+            }
+            @if (password?.errors?.['minlength']) {
+            <span>Password must be at least 8 characters</span>
             }
           </div>
+          }
+        </div>
         }
 
         <div class="form-group">
           <label class="checkbox-label">
-            <input
-              type="checkbox"
-              formControlName="hidden"
-              class="form-checkbox"
-            />
+            <input type="checkbox" formControlName="hidden" class="form-checkbox" />
             <span>Hidden Network</span>
           </label>
           <p class="form-hint">Check this if your network SSID is hidden</p>
         </div>
 
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="isLoading()"
-        >
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading()">
           @if (isLoading()) {
-            <span>Generating QR Code...</span>
+          <span>Generating QR Code...</span>
           } @else {
-            <span>Generate QR Code</span>
+          <span>Generate QR Code</span>
           }
         </button>
       </form>
     </div>
 
     @if (generatedCredential()) {
-      <div class="qr-section">
-        <div class="qr-card">
-          <h2 class="qr-title">Your WiFi QR Code</h2>
-          <div class="qr-image-container">
-            <img
-              [src]="getQRCodeUrl()"
-              alt="WiFi QR Code"
-              class="qr-image"
-            />
+    <div class="qr-section">
+      <div class="qr-card">
+        <h2 class="qr-title">Your WiFi QR Code</h2>
+        <div class="qr-image-container">
+          <img [src]="getQRCodeUrl()" alt="WiFi QR Code" class="qr-image" />
+        </div>
+        <div class="qr-details">
+          <div class="detail-row">
+            <span class="detail-label">Network:</span>
+            <span class="detail-value">{{ generatedCredential()?.ssid }}</span>
           </div>
-          <div class="qr-details">
-            <div class="detail-row">
-              <span class="detail-label">Network:</span>
-              <span class="detail-value">{{ generatedCredential()?.ssid }}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Security:</span>
-              <span class="detail-value">{{ generatedCredential()?.securityType }}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Hidden:</span>
-              <span class="detail-value">{{ generatedCredential()?.hidden ? 'Yes' : 'No' }}</span>
-            </div>
+          <div class="detail-row">
+            <span class="detail-label">Security:</span>
+            <span class="detail-value">{{ generatedCredential()?.securityType }}</span>
           </div>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="resetForm()"
-          >
+          <div class="detail-row">
+            <span class="detail-label">Hidden:</span>
+            <span class="detail-value">{{ generatedCredential()?.hidden ? 'Yes' : 'No' }}</span>
+          </div>
+        </div>
+        <div class="qr-actions">
+          <button type="button" class="btn btn-primary btn-download" (click)="downloadQRCode()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20"
+              height="20">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download PNG
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetForm()">
             Generate Another
           </button>
         </div>
       </div>
+    </div>
     }
   </div>
 </div>

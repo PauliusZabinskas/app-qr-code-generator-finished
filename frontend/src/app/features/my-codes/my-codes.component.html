@@ -84,6 +84,14 @@
       <h2 class="modal-title">{{ selectedCredential()?.ssid }}</h2>
       <div class="modal-qr">
         <img [src]="getQRCodeUrl(selectedCredential()!.qrCodeData)" alt="WiFi QR Code" />
+        <button type="button" class="btn btn-secondary btn-download" (click)="downloadQRCode(selectedCredential()!)">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20"
+            height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download PNG
+        </button>
       </div>
       <div class="modal-details">
         <div class="modal-detail-row">

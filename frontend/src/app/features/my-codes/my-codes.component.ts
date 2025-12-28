@@ -68,6 +68,15 @@ export class MyCodesComponent implements OnInit {
     });
   }
 
+  downloadQRCode(credential: WiFiCredential): void {
+    const link = document.createElement('a');
+    link.href = this.getQRCodeUrl(credential.qrCodeData);
+    link.download = `wifi-qr-${credential.ssid.replace(/\s+/g, '-').toLowerCase()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   getQRCodeUrl(qrCodeData: string): string {
     return this.wifiService.getQRCodeUrl(qrCodeData);
   }

@@ -68,6 +68,18 @@ export class QrGeneratorComponent {
     });
   }
 
+  downloadQRCode(): void {
+    const credential = this.generatedCredential();
+    if (!credential) return;
+
+    const link = document.createElement('a');
+    link.href = this.getQRCodeUrl();
+    link.download = `wifi-qr-${credential.ssid.replace(/\s+/g, '-').toLowerCase()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   getQRCodeUrl(): string {
     const credential = this.generatedCredential();
     return credential ? this.wifiService.getQRCodeUrl(credential.qrCodeData) : '';
